@@ -2,227 +2,570 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Search New Jersey public employee overtime by facility in 2025.">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  >
+
+  <meta
+    name="description"
+    content="Search New Jersey public employee overtime by facility in 2025."
+  >
+
   <title>N.J. Overtime By Facility, 2025 | Patch Data</title>
 
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Roboto:wght@400;500;700;900&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- Local stylesheet -->
+  <link rel="stylesheet" href="./styles.css">
 </head>
 
 <body>
+
+  <!-- =========================
+       BRAND BAR
+  ========================== -->
+
   <header class="brand-bar">
     <div class="brand-inner">
+
       <div class="patch-mark" aria-label="Patch Data">
         <span class="patch-word">PATCH</span>
         <span class="data-word">DATA</span>
       </div>
-      <div class="brand-kicker">NEW JERSEY</div>
+
+      <div class="brand-kicker">
+        NEW JERSEY
+      </div>
+
     </div>
   </header>
 
+
+  <!-- =========================
+       MAIN PAGE
+  ========================== -->
+
   <main class="page-shell">
 
-    <section class="hero">
-      <p class="eyebrow">PUBLIC PAYROLL • 2025</p>
 
-      <h1>How much overtime did workers earn at each N.J. facility?</h1>
+    <!-- =========================
+         HERO
+    ========================== -->
+
+    <section class="hero">
+
+      <p class="eyebrow">
+        PUBLIC PAYROLL • 2025
+      </p>
+
+      <h1>
+        How much overtime did workers earn at each N.J. facility?
+      </h1>
 
       <p class="dek">
         Search and compare overtime across New Jersey public facilities.
-        The table shows the median overtime payment, the middle 50% of payments,
-        the full range and the share of overtime earners who received at least
-        $100,000 in overtime.
+        The table shows the median overtime payment, the middle 50% of
+        payments, the full range and the share of overtime earners who
+        received at least $100,000 in overtime.
       </p>
 
       <div class="source-line">
-        <span class="source-label">Source</span>
+        <span class="source-label">
+          Source
+        </span>
+
         New Jersey Transparency Center payroll data
       </div>
+
     </section>
 
-    <section class="data-section" aria-labelledby="table-title">
+
+    <!-- =========================
+         DATA TABLE
+    ========================== -->
+
+    <section
+      class="data-section"
+      aria-labelledby="table-title"
+    >
 
       <div class="section-heading">
+
         <div>
-          <p class="section-kicker">SEARCH THE DATA</p>
-          <h2 id="table-title">Overtime by facility</h2>
+
+          <p class="section-kicker">
+            SEARCH THE DATA
+          </p>
+
+          <h2 id="table-title">
+            Overtime by facility
+          </h2>
+
         </div>
 
-        <div id="loadStatus" class="load-status" aria-live="polite">
+
+        <div
+          id="loadStatus"
+          class="load-status"
+          aria-live="polite"
+        >
           Loading data…
         </div>
+
       </div>
 
-      <div id="dataApp" class="hidden">
+
+      <!-- Hidden until CSV finishes loading -->
+
+      <div
+        id="dataApp"
+        class="hidden"
+      >
+
+
+        <!-- =========================
+             SUMMARY
+        ========================== -->
 
         <div class="summary-grid">
-          <article class="summary-card">
-            <div class="summary-label">Facilities shown</div>
-            <div class="summary-value" id="facilityCount">—</div>
-          </article>
 
           <article class="summary-card">
-            <div class="summary-label">OT earners shown</div>
-            <div class="summary-value" id="workerCount">—</div>
+
+            <div class="summary-label">
+              Facilities shown
+            </div>
+
+            <div
+              class="summary-value"
+              id="facilityCount"
+            >
+              —
+            </div>
+
           </article>
 
+
           <article class="summary-card">
-            <div class="summary-label">$100K+ OT earners</div>
-            <div class="summary-value" id="highOtCount">—</div>
+
+            <div class="summary-label">
+              OT earners shown
+            </div>
+
+            <div
+              class="summary-value"
+              id="workerCount"
+            >
+              —
+            </div>
+
           </article>
+
+
+          <article class="summary-card">
+
+            <div class="summary-label">
+              $100K+ OT earners
+            </div>
+
+            <div
+              class="summary-value"
+              id="highOtCount"
+            >
+              —
+            </div>
+
+          </article>
+
         </div>
+
+
+        <!-- =========================
+             CONTROLS
+        ========================== -->
 
         <div class="controls-panel">
 
+
+          <!-- Search -->
+
           <div class="control control-search">
-            <label for="searchInput">Search facility or entity</label>
+
+            <label for="searchInput">
+              Search facility or entity
+            </label>
+
             <div class="search-wrap">
-              <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z"/>
+
+              <svg
+                class="search-icon"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z"
+                />
               </svg>
+
               <input
                 id="searchInput"
                 type="search"
                 placeholder="Try Northern State Prison"
                 autocomplete="off"
               >
+
             </div>
+
           </div>
+
+
+          <!-- Entity Filter -->
 
           <div class="control">
-            <label for="entityFilter">Entity</label>
+
+            <label for="entityFilter">
+              Entity
+            </label>
+
             <select id="entityFilter">
-              <option value="">All entities</option>
+              <option value="">
+                All entities
+              </option>
             </select>
+
           </div>
 
+
+          <!-- Missing Facilities -->
+
           <div class="control check-control">
+
             <label class="checkbox-label">
-              <input type="checkbox" id="includeMissing">
-              <span>Include “Not Provided”</span>
+
+              <input
+                type="checkbox"
+                id="includeMissing"
+              >
+
+              <span>
+                Include “Not Provided”
+              </span>
+
             </label>
+
           </div>
 
         </div>
 
-        <div class="quick-filter-row">
-          <span class="quick-filter-label">Quick filters</span>
 
-          <button class="filter-chip active" type="button" data-filter="all">
+        <!-- =========================
+             QUICK FILTERS
+        ========================== -->
+
+        <div class="quick-filter-row">
+
+          <span class="quick-filter-label">
+            Quick filters
+          </span>
+
+
+          <button
+            class="filter-chip active"
+            type="button"
+            data-filter="all"
+          >
             All facilities
           </button>
 
-          <button class="filter-chip" type="button" data-filter="median25">
+
+          <button
+            class="filter-chip"
+            type="button"
+            data-filter="median25"
+          >
             Median OT ≥ $25K
           </button>
 
-          <button class="filter-chip" type="button" data-filter="pct5">
+
+          <button
+            class="filter-chip"
+            type="button"
+            data-filter="pct5"
+          >
             5%+ earned $100K
           </button>
 
-          <button class="filter-chip" type="button" data-filter="pct10">
+
+          <button
+            class="filter-chip"
+            type="button"
+            data-filter="pct10"
+          >
             10%+ earned $100K
           </button>
+
         </div>
+
+
+        <!-- =========================
+             TABLE CONTROLS
+        ========================== -->
 
         <div class="table-topline">
-          <p id="resultsText">Showing 0 facilities</p>
+
+          <p id="resultsText">
+            Showing 0 facilities
+          </p>
+
 
           <label class="rows-control">
-            <span>Rows</span>
+
+            <span>
+              Rows
+            </span>
+
             <select id="pageSize">
-              <option value="25">25</option>
-              <option value="50" selected>50</option>
-              <option value="100">100</option>
-              <option value="250">250</option>
+
+              <option value="25">
+                25
+              </option>
+
+              <option
+                value="50"
+                selected
+              >
+                50
+              </option>
+
+              <option value="100">
+                100
+              </option>
+
+              <option value="250">
+                250
+              </option>
+
             </select>
+
           </label>
+
         </div>
 
+
+        <!-- =========================
+             RESPONSIVE TABLE
+        ========================== -->
+
         <div class="table-shell">
-          <div class="table-scroll">
+
+          <div
+            class="table-scroll"
+            role="region"
+            aria-label="New Jersey overtime by facility"
+            tabindex="0"
+          >
+
             <table>
+
               <thead>
+
                 <tr>
-                  <th data-key="department" data-type="text" class="sortable">
+
+                  <th
+                    scope="col"
+                    data-key="department"
+                    data-type="text"
+                    class="sortable"
+                  >
                     Facility
                   </th>
 
-                  <th data-key="entity" data-type="text" class="sortable">
+
+                  <th
+                    scope="col"
+                    data-key="entity"
+                    data-type="text"
+                    class="sortable"
+                  >
                     Entity
                   </th>
 
-                  <th data-key="employeesWithOT" data-type="number" class="sortable numeric">
+
+                  <th
+                    scope="col"
+                    data-key="employeesWithOT"
+                    data-type="number"
+                    class="sortable numeric"
+                  >
                     OT earners
                   </th>
 
-                  <th data-key="medianOT" data-type="number" class="sortable numeric">
+
+                  <th
+                    scope="col"
+                    data-key="medianOT"
+                    data-type="number"
+                    class="sortable numeric"
+                  >
                     Median OT
                   </th>
 
-                  <th data-key="p25OT" data-type="number" class="sortable">
+
+                  <th
+                    scope="col"
+                    data-key="p25OT"
+                    data-type="number"
+                    class="sortable"
+                  >
                     Middle 50%
                   </th>
 
-                  <th data-key="lowestOT" data-type="number" class="sortable">
+
+                  <th
+                    scope="col"
+                    data-key="lowestOT"
+                    data-type="number"
+                    class="sortable"
+                  >
                     Full range
                   </th>
 
-                  <th data-key="employees100k" data-type="number" class="sortable numeric">
+
+                  <th
+                    scope="col"
+                    data-key="employees100k"
+                    data-type="number"
+                    class="sortable numeric"
+                  >
                     $100K+
                   </th>
 
-                  <th data-key="pct100k" data-type="number" class="sortable numeric">
+
+                  <th
+                    scope="col"
+                    data-key="pct100k"
+                    data-type="number"
+                    class="sortable numeric"
+                  >
                     % $100K+
                   </th>
+
                 </tr>
+
               </thead>
 
-              <tbody id="tableBody"></tbody>
+
+              <tbody id="tableBody">
+              </tbody>
+
             </table>
+
           </div>
+
         </div>
 
-        <nav class="pagination" aria-label="Table pagination">
-          <button id="prevPage" type="button">Previous</button>
-          <span id="pageInfo">Page 1 of 1</span>
-          <button id="nextPage" type="button">Next</button>
+
+        <!-- =========================
+             PAGINATION
+        ========================== -->
+
+        <nav
+          class="pagination"
+          aria-label="Table pagination"
+        >
+
+          <button
+            id="prevPage"
+            type="button"
+          >
+            Previous
+          </button>
+
+
+          <span
+            id="pageInfo"
+            aria-live="polite"
+          >
+            Page 1 of 1
+          </span>
+
+
+          <button
+            id="nextPage"
+            type="button"
+          >
+            Next
+          </button>
+
         </nav>
 
       </div>
+
     </section>
 
-    <aside class="methodology">
-      <div class="methodology-rule"></div>
 
-      <p class="section-kicker">ABOUT THE DATA</p>
+    <!-- =========================
+         METHODOLOGY
+    ========================== -->
 
-      <h2>How to read this table</h2>
+    <aside
+      class="methodology"
+      aria-labelledby="methodology-title"
+    >
 
-      <p>
-        <strong>Median OT</strong> is the midpoint among employees at each facility
-        who received overtime in 2025. <strong>Middle 50%</strong> shows the 25th
-        through 75th percentile of overtime payments. <strong>Full range</strong>
-        shows the lowest and highest overtime payments.
+      <div
+        class="methodology-rule"
+        aria-hidden="true"
+      ></div>
+
+
+      <p class="section-kicker">
+        ABOUT THE DATA
       </p>
 
+
+      <h2 id="methodology-title">
+        How to read this table
+      </h2>
+
+
       <p>
-        <strong>% $100K+</strong> is the percentage of overtime-earning employees
-        at that facility who received at least $100,000 in overtime. It is not the
-        percentage of the facility's entire workforce.
+        <strong>Median OT</strong> is the midpoint among employees
+        at each facility who received overtime in 2025.
+        <strong>Middle 50%</strong> shows the 25th through 75th
+        percentile of overtime payments.
+        <strong>Full range</strong> shows the lowest and highest
+        overtime payments.
       </p>
+
+
+      <p>
+        <strong>% $100K+</strong> is the percentage of
+        overtime-earning employees at that facility who received
+        at least $100,000 in overtime. It is not the percentage
+        of the facility's entire workforce.
+      </p>
+
 
       <p class="methodology-note">
         Facilities listed as “Not Provided” are hidden by default.
       </p>
+
     </aside>
 
   </main>
 
-  <script src="app.js"></script>
+
+  <!-- Local JavaScript -->
+  <script src="./app.js"></script>
+
 </body>
 </html>
