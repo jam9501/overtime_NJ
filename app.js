@@ -1,4 +1,4 @@
-const DATA_URL = "./data/nj_2025_overtime_by_facility.csv";
+const DATA_URL = "./nj_2025_overtime_by_facility.csv";
 
 const state = {
   facilities: [],
@@ -38,7 +38,7 @@ async function loadData() {
     });
 
     if (!response.ok) {
-      throw new Error(`Could not load CSV: HTTP ${response.status}`);
+      throw new Error(`HTTP ${response.status}`);
     }
 
     const text = await response.text();
@@ -57,7 +57,9 @@ async function loadData() {
       "Pct_100K_OT"
     ];
 
-    const headers = rows.length ? Object.keys(rows[0]) : [];
+    const headers = rows.length
+      ? Object.keys(rows[0])
+      : [];
 
     const missing = required.filter(
       column => !headers.includes(column)
@@ -70,7 +72,9 @@ async function loadData() {
     }
 
     state.facilities = rows.map(row => ({
-      entity: cleanText(row["Entity"]) || "Unknown",
+      entity:
+        cleanText(row["Entity"]) ||
+        "Unknown",
 
       department:
         cleanText(row["Department"]) ||
@@ -101,11 +105,15 @@ async function loadData() {
         toNumber(row["Pct_100K_OT"])
     }));
 
-    populateEntityFilter(state.facilities);
+    populateEntityFilter(
+      state.facilities
+    );
 
     bindControls();
 
-    els.dataApp.classList.remove("hidden");
+    els.dataApp.classList.remove(
+      "hidden"
+    );
 
     setStatus(
       `${formatInteger(state.facilities.length)} facility rows loaded`
@@ -118,10 +126,12 @@ async function loadData() {
   } catch (error) {
     console.error(error);
 
-    els.dataApp.classList.add("hidden");
+    els.dataApp.classList.add(
+      "hidden"
+    );
 
     setStatus(
-      "Could not load facility data. Check that data/nj_2025_overtime_by_facility.csv exists in the GitHub repo.",
+      "Could not load facility data. Check that nj_2025_overtime_by_facility.csv is in the same GitHub repo folder as index.html.",
       true
     );
   }
@@ -142,7 +152,6 @@ function bindControls() {
     }
   );
 
-
   els.entityFilter.addEventListener(
     "change",
     () => {
@@ -150,7 +159,6 @@ function bindControls() {
       applyFiltersAndRender();
     }
   );
-
 
   els.includeMissing.addEventListener(
     "change",
@@ -160,12 +168,13 @@ function bindControls() {
     }
   );
 
-
   els.pageSize.addEventListener(
     "change",
     () => {
       state.pageSize =
-        Number(els.pageSize.value);
+        Number(
+          els.pageSize.value
+        );
 
       state.page = 1;
 
@@ -173,9 +182,10 @@ function bindControls() {
     }
   );
 
-
   document
-    .querySelectorAll(".filter-chip")
+    .querySelectorAll(
+      ".filter-chip"
+    )
     .forEach(button => {
 
       button.addEventListener(
@@ -183,12 +193,18 @@ function bindControls() {
         () => {
 
           document
-            .querySelectorAll(".filter-chip")
+            .querySelectorAll(
+              ".filter-chip"
+            )
             .forEach(chip => {
-              chip.classList.remove("active");
+              chip.classList.remove(
+                "active"
+              );
             });
 
-          button.classList.add("active");
+          button.classList.add(
+            "active"
+          );
 
           state.quickFilter =
             button.dataset.filter;
@@ -201,9 +217,10 @@ function bindControls() {
 
     });
 
-
   document
-    .querySelectorAll("th.sortable")
+    .querySelectorAll(
+      "th.sortable"
+    )
     .forEach(th => {
 
       th.addEventListener(
@@ -215,7 +232,6 @@ function bindControls() {
 
           const type =
             th.dataset.type;
-
 
           if (
             state.sortKey === key
@@ -236,7 +252,6 @@ function bindControls() {
                 : "desc";
           }
 
-
           state.page = 1;
 
           syncSortIndicator();
@@ -247,21 +262,17 @@ function bindControls() {
 
     });
 
-
   els.prevPage.addEventListener(
     "click",
     () => {
 
       if (state.page > 1) {
-
         state.page -= 1;
-
         render();
       }
 
     }
   );
-
 
   els.nextPage.addEventListener(
     "click",
@@ -270,13 +281,11 @@ function bindControls() {
       const totalPages =
         getTotalPages();
 
-
       if (
-        state.page < totalPages
+        state.page <
+        totalPages
       ) {
-
         state.page += 1;
-
         render();
       }
 
@@ -286,7 +295,7 @@ function bindControls() {
 
 
 // ============================================================
-// FILTER
+// FILTERS
 // ============================================================
 
 function applyFiltersAndRender() {
@@ -296,80 +305,76 @@ function applyFiltersAndRender() {
       .trim()
       .toLowerCase();
 
-
   const selectedEntity =
     els.entityFilter.value;
-
 
   const showMissing =
     els.includeMissing.checked;
 
-
   state.filtered =
-    state.facilities.filter(row => {
-
-      if (
-        !showMissing &&
-        isMissingDepartment(
-          row.department
-        )
-      ) {
-        return false;
-      }
-
-
-      if (
-        selectedEntity &&
-        row.entity !== selectedEntity
-      ) {
-        return false;
-      }
-
-
-      if (query) {
-
-        const haystack =
-          `${row.department} ${row.entity}`
-            .toLowerCase();
-
+    state.facilities.filter(
+      row => {
 
         if (
-          !haystack.includes(query)
+          !showMissing &&
+          isMissingDepartment(
+            row.department
+          )
         ) {
           return false;
         }
 
+        if (
+          selectedEntity &&
+          row.entity !==
+            selectedEntity
+        ) {
+          return false;
+        }
+
+        if (query) {
+
+          const haystack =
+            `${row.department} ${row.entity}`
+              .toLowerCase();
+
+          if (
+            !haystack.includes(
+              query
+            )
+          ) {
+            return false;
+          }
+        }
+
+        if (
+          state.quickFilter ===
+            "median25" &&
+          row.medianOT < 25000
+        ) {
+          return false;
+        }
+
+        if (
+          state.quickFilter ===
+            "pct5" &&
+          row.pct100k < 5
+        ) {
+          return false;
+        }
+
+        if (
+          state.quickFilter ===
+            "pct10" &&
+          row.pct100k < 10
+        ) {
+          return false;
+        }
+
+        return true;
+
       }
-
-
-      if (
-        state.quickFilter === "median25" &&
-        row.medianOT < 25000
-      ) {
-        return false;
-      }
-
-
-      if (
-        state.quickFilter === "pct5" &&
-        row.pct100k < 5
-      ) {
-        return false;
-      }
-
-
-      if (
-        state.quickFilter === "pct10" &&
-        row.pct100k < 10
-      ) {
-        return false;
-      }
-
-
-      return true;
-
-    });
-
+    );
 
   render();
 }
@@ -385,29 +390,27 @@ function render() {
     [...state.filtered]
       .sort(compareRows);
 
-
   const totalPages =
     getTotalPages();
 
-
   if (
-    state.page > totalPages
+    state.page >
+    totalPages
   ) {
-    state.page = totalPages;
+    state.page =
+      totalPages;
   }
-
 
   const start =
     (state.page - 1) *
     state.pageSize;
 
-
   const pageRows =
     sorted.slice(
       start,
-      start + state.pageSize
+      start +
+        state.pageSize
     );
-
 
   if (
     pageRows.length === 0
@@ -415,7 +418,13 @@ function render() {
 
     els.tableBody.innerHTML = `
       <tr>
-        <td colspan="8" style="text-align:center;padding:32px;">
+        <td
+          colspan="8"
+          style="
+            text-align:center;
+            padding:32px;
+          "
+        >
           No facilities match these filters.
         </td>
       </tr>
@@ -425,117 +434,135 @@ function render() {
 
     els.tableBody.innerHTML =
       pageRows
-        .map(row => `
-          <tr>
+        .map(
+          row => `
+            <tr>
 
-            <td>
-              ${escapeHTML(row.department)}
-            </td>
+              <td>
+                ${escapeHTML(
+                  row.department
+                )}
+              </td>
 
-            <td>
-              ${escapeHTML(row.entity)}
-            </td>
+              <td>
+                ${escapeHTML(
+                  row.entity
+                )}
+              </td>
 
-            <td class="numeric">
-              ${formatInteger(
-                row.employeesWithOT
-              )}
-            </td>
+              <td class="numeric">
+                ${formatInteger(
+                  row.employeesWithOT
+                )}
+              </td>
 
-            <td class="numeric">
-              ${formatMoney(
-                row.medianOT
-              )}
-            </td>
+              <td class="numeric">
+                ${formatMoney(
+                  row.medianOT
+                )}
+              </td>
 
-            <td class="money-range">
-              ${formatMoney(row.p25OT)}
-              –
-              ${formatMoney(row.p75OT)}
-            </td>
+              <td class="money-range">
+                ${formatMoney(
+                  row.p25OT
+                )}
+                –
+                ${formatMoney(
+                  row.p75OT
+                )}
+              </td>
 
-            <td class="money-range">
-              ${formatMoney(row.lowestOT)}
-              –
-              ${formatMoney(row.highestOT)}
-            </td>
+              <td class="money-range">
+                ${formatMoney(
+                  row.lowestOT
+                )}
+                –
+                ${formatMoney(
+                  row.highestOT
+                )}
+              </td>
 
-            <td class="numeric">
-              ${formatInteger(
-                row.employees100k
-              )}
-            </td>
+              <td class="numeric">
+                ${formatInteger(
+                  row.employees100k
+                )}
+              </td>
 
-            <td class="numeric">
-              ${formatPercent(
-                row.pct100k
-              )}
-            </td>
+              <td class="numeric">
+                ${formatPercent(
+                  row.pct100k
+                )}
+              </td>
 
-          </tr>
-        `)
+            </tr>
+          `
+        )
         .join("");
   }
 
-
   els.resultsText.textContent =
     `Showing ${
-      formatInteger(sorted.length)
+      formatInteger(
+        sorted.length
+      )
     } ${
       sorted.length === 1
         ? "facility"
         : "facilities"
     }`;
 
-
   els.pageInfo.textContent =
     `Page ${state.page} of ${totalPages}`;
-
 
   els.prevPage.disabled =
     state.page <= 1;
 
-
   els.nextPage.disabled =
-    state.page >= totalPages;
+    state.page >=
+    totalPages;
 
-
-  updateSummary(sorted);
+  updateSummary(
+    sorted
+  );
 }
 
 
 // ============================================================
-// SUMMARY
+// SUMMARY CARDS
 // ============================================================
 
 function updateSummary(rows) {
 
   els.facilityCount.textContent =
-    formatInteger(rows.length);
-
+    formatInteger(
+      rows.length
+    );
 
   const workers =
     rows.reduce(
       (sum, row) =>
-        sum + row.employeesWithOT,
+        sum +
+        row.employeesWithOT,
       0
     );
-
 
   const highOT =
     rows.reduce(
       (sum, row) =>
-        sum + row.employees100k,
+        sum +
+        row.employees100k,
       0
     );
 
-
   els.workerCount.textContent =
-    formatInteger(workers);
-
+    formatInteger(
+      workers
+    );
 
   els.highOtCount.textContent =
-    formatInteger(highOT);
+    formatInteger(
+      highOT
+    );
 }
 
 
@@ -559,24 +586,28 @@ function getTotalPages() {
 // SORTING
 // ============================================================
 
-function compareRows(a, b) {
+function compareRows(
+  a,
+  b
+) {
 
   const key =
     state.sortKey;
-
 
   const direction =
     state.sortDirection === "asc"
       ? 1
       : -1;
 
+  const av =
+    a[key];
 
-  const av = a[key];
-  const bv = b[key];
-
+  const bv =
+    b[key];
 
   if (
-    typeof av === "string"
+    typeof av ===
+    "string"
   ) {
 
     return (
@@ -584,14 +615,13 @@ function compareRows(a, b) {
         bv,
         undefined,
         {
-          sensitivity: "base"
+          sensitivity:
+            "base"
         }
       ) *
       direction
     );
-
   }
-
 
   return (
     (av - bv) *
@@ -613,18 +643,17 @@ function syncSortIndicator() {
         "sort-desc"
       );
 
-
       if (
         th.dataset.key ===
         state.sortKey
       ) {
 
         th.classList.add(
-          state.sortDirection === "asc"
+          state.sortDirection ===
+            "asc"
             ? "sort-asc"
             : "sort-desc"
         );
-
       }
 
     });
@@ -644,7 +673,8 @@ function populateEntityFilter(
       ...new Set(
         facilities
           .map(
-            row => row.entity
+            row =>
+              row.entity
           )
           .filter(Boolean)
       )
@@ -653,7 +683,6 @@ function populateEntityFilter(
         (a, b) =>
           a.localeCompare(b)
       );
-
 
   els.entityFilter.innerHTML =
     `
@@ -666,9 +695,13 @@ function populateEntityFilter(
       .map(
         entity => `
           <option
-            value="${escapeAttribute(entity)}"
+            value="${escapeAttribute(
+              entity
+            )}"
           >
-            ${escapeHTML(entity)}
+            ${escapeHTML(
+              entity
+            )}
           </option>
         `
       )
@@ -688,13 +721,11 @@ function parseCSV(text) {
   let field = "";
   let inQuotes = false;
 
-
   const source =
     text.replace(
       /^\uFEFF/,
       ""
     );
-
 
   for (
     let i = 0;
@@ -707,7 +738,6 @@ function parseCSV(text) {
 
     const next =
       source[i + 1];
-
 
     if (inQuotes) {
 
@@ -730,10 +760,8 @@ function parseCSV(text) {
         field += char;
       }
 
-
       continue;
     }
-
 
     if (
       char === '"'
@@ -746,7 +774,6 @@ function parseCSV(text) {
     ) {
 
       row.push(field);
-
       field = "";
 
     } else if (
@@ -754,11 +781,9 @@ function parseCSV(text) {
     ) {
 
       row.push(field);
-
       rows.push(row);
 
       row = [];
-
       field = "";
 
     } else if (
@@ -767,9 +792,7 @@ function parseCSV(text) {
 
       field += char;
     }
-
   }
-
 
   if (
     field.length ||
@@ -777,10 +800,8 @@ function parseCSV(text) {
   ) {
 
     row.push(field);
-
     rows.push(row);
   }
-
 
   if (
     rows.length === 0
@@ -791,7 +812,6 @@ function parseCSV(text) {
     );
   }
 
-
   const headers =
     rows
       .shift()
@@ -800,32 +820,33 @@ function parseCSV(text) {
           cleanText(header)
       );
 
-
   return rows
-
     .filter(
       values =>
         values.some(
           value =>
-            cleanText(value) !== ""
+            cleanText(
+              value
+            ) !== ""
         )
     )
-
     .map(
       values => {
 
         const record = {};
 
-
         headers.forEach(
-          (header, index) => {
+          (
+            header,
+            index
+          ) => {
 
             record[header] =
-              values[index] ?? "";
+              values[index] ??
+              "";
 
           }
         );
-
 
         return record;
       }
@@ -856,18 +877,20 @@ function toNumber(value) {
         "-$1"
       );
 
-
   const number =
     Number(cleaned);
 
-
-  return Number.isFinite(number)
+  return Number.isFinite(
+    number
+  )
     ? number
     : 0;
 }
 
 
-function cleanText(value) {
+function cleanText(
+  value
+) {
 
   return String(
     value ?? ""
@@ -875,24 +898,29 @@ function cleanText(value) {
 }
 
 
-function isMissingDepartment(value) {
+function isMissingDepartment(
+  value
+) {
 
   const normalized =
     cleanText(value)
       .toLowerCase();
 
-
   return (
     normalized === "" ||
     normalized ===
       "not provided" ||
-    normalized === "n/a" ||
-    normalized === "na"
+    normalized ===
+      "n/a" ||
+    normalized ===
+      "na"
   );
 }
 
 
-function formatMoney(value) {
+function formatMoney(
+  value
+) {
 
   return new Intl.NumberFormat(
     "en-US",
@@ -905,7 +933,9 @@ function formatMoney(value) {
 }
 
 
-function formatInteger(value) {
+function formatInteger(
+  value
+) {
 
   return new Intl.NumberFormat(
     "en-US",
@@ -916,19 +946,38 @@ function formatInteger(value) {
 }
 
 
-function formatPercent(value) {
+function formatPercent(
+  value
+) {
 
-  return `${Number(value).toFixed(1)}%`;
+  return `${
+    Number(value)
+      .toFixed(1)
+  }%`;
 }
 
 
-function escapeHTML(value) {
+function escapeHTML(
+  value
+) {
 
   return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
+    .replaceAll(
+      "&",
+      "&amp;"
+    )
+    .replaceAll(
+      "<",
+      "&lt;"
+    )
+    .replaceAll(
+      ">",
+      "&gt;"
+    )
+    .replaceAll(
+      '"',
+      "&quot;"
+    )
     .replaceAll(
       "'",
       "&#039;"
@@ -936,9 +985,13 @@ function escapeHTML(value) {
 }
 
 
-function escapeAttribute(value) {
+function escapeAttribute(
+  value
+) {
 
-  return escapeHTML(value);
+  return escapeHTML(
+    value
+  );
 }
 
 
@@ -949,7 +1002,6 @@ function setStatus(
 
   els.loadStatus.textContent =
     message;
-
 
   els.loadStatus
     .classList
